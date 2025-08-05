@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  jellyfin-proxy:
+    image: nginx:alpine
+    container_name: jellyfin-proxy
+    ports:
+      - "${PROXY_PORT:-8080}:80"
+    volumes:
+      - ./nginx/jellyfin.conf:/etc/nginx/nginx.conf:ro
+    environment:
+      - JELLYFIN_HOST=${JELLYFIN_HOST:-100.91.132.58}
+      - JELLYFIN_PORT=${JELLYFIN_PORT:-8096}
+    restart: unless-stopped
+    depends_on:
+      - config-generator
+
+  config-generator:
+    image: alpine:latest
+    container_name: jellyfin-config-generator
+    volumes:
+      - ./nginx:/output
+      - ./nginx/jellyfin.conf.template:/template:ro
+    environment:
+      - JELLYFIN_HOST=${JELLYFIN_HOST:-100.91.132.58}
+      - JELLYFIN_PORT=${JELLYFIN_PORT:-8096}
+    command: >
+      sh -c "
+        apk add --no-cache envsubst &&
+        envsubst < /template > /output/jellyfin.conf &&
+        echo 'Configuration generated successfully'
+      "
+    restart: "no"
