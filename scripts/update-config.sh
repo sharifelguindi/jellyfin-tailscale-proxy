@@ -4,11 +4,11 @@ set -e
 
 echo "🔄 Updating Jellyfin proxy configuration..."
 
-# Load environment variables
-if [ -f config/jellyfin.env ]; then
-    export $(cat config/jellyfin.env | grep -v '^#' | xargs)
+# Load environment variables from .env
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | xargs)
 else
-    echo "❌ config/jellyfin.env not found!"
+    echo "❌ .env not found!"
     exit 1
 fi
 
