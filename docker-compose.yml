@@ -12,7 +12,6 @@ services:
     restart: unless-stopped
     command: >
       sh -c "
-        apk add --no-cache gettext &&
         cat > /etc/nginx/nginx.conf << 'EOF'
         events { 
             worker_connections 1024; 
