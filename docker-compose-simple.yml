@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  jellyfin-proxy:
+    image: nginx:alpine
+    container_name: jellyfin-proxy
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro

@@ -35,10 +35,39 @@ The proxy includes a health endpoint at `/health` for monitoring.
 
 ## Troubleshooting
 
-If you see "No log line matching" in Portainer:
-1. Check the container logs for startup errors
-2. Verify the Jellyfin host is reachable from within the Docker network
-3. Ensure the Tailscale IP and port are correct
+### "No log line matching" Error in Portainer
+
+This error typically means the container failed to start. To diagnose:
+
+1. **Check container status**:
+   - Go to Containers → Look for `jellyfin-proxy`
+   - Check if it's in "Exited" status
+   - Click on it and check the "Inspect" tab for error details
+
+2. **Try the minimal test**:
+   - Deploy `docker-compose-minimal.yml` first
+   - If that works, the issue is with the configuration
+   - If that fails, it's a Portainer/Docker issue
+
+3. **Check for conflicts**:
+   - Ensure port 8080 isn't already in use
+   - Remove any existing `jellyfin-proxy` containers
+   - Check if nginx:alpine image can be pulled
+
+4. **View logs differently**:
+   - SSH into your Raspberry Pi
+   - Run: `docker logs jellyfin-proxy`
+   - Or: `docker-compose logs` in the stack directory
+
+5. **Environment variables**:
+   - Ensure variables are set in Portainer's stack environment section
+   - Don't use quotes around values in Portainer
+
+6. **Alternative deployment**:
+   - Try deploying via SSH first to verify it works:
+   ```bash
+   docker run --name jellyfin-proxy -p 8080:80 -e JELLYFIN_HOST=100.91.132.58 -e JELLYFIN_PORT=8096 nginx:alpine
+   ```
 
 ## Architecture
 
